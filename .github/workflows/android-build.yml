@@ -12,18 +12,18 @@ jobs:
 
     steps:
       - name: Checkout source
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Install Dependencies
         run: npm install
@@ -31,13 +31,12 @@ jobs:
       - name: Build Web App
         run: npm run build
 
-      - name: Setup Capacitor and Android
+      - name: Deep Clean and Setup Android
         run: |
           npm install @capacitor/android @capacitor/cli
-          # Forzamos la creación o actualización de la carpeta android
-          if [ ! -d "android" ]; then
-            npx cap add android
-          fi
+          # Eliminamos cualquier rastro de la carpeta android para evitar conflictos
+          rm -rf android
+          npx cap add android
           npx cap sync
 
       - name: Build APK with Gradle
@@ -47,7 +46,7 @@ jobs:
           ./gradlew assembleDebug
 
       - name: Upload APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: VoxReader-APP
           path: android/app/build/outputs/apk/debug/app-debug.apk
