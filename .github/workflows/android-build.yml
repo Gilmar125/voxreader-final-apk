@@ -33,8 +33,11 @@ jobs:
 
       - name: Setup Capacitor and Android
         run: |
-          npm install @capacitor/android
-          npx cap add android
+          npm install @capacitor/android @capacitor/cli
+          # Forzamos la creación o actualización de la carpeta android
+          if [ ! -d "android" ]; then
+            npx cap add android
+          fi
           npx cap sync
 
       - name: Build APK with Gradle
